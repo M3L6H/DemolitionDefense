@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7818006483864377222}
   - component: {fileID: 7818006483864377223}
   m_Layer: 0
-  m_Name: GraphicBasicRobotBase
+  m_Name: GraphicHoverRobotBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -69,7 +69,7 @@ SpriteRenderer:
   m_SortingLayerID: 2132477489
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -7945901444079236628, guid: c1d04b6d6f5fd3e468c82f57f4bff718,
+  m_Sprite: {fileID: -8421458170528590454, guid: c1d04b6d6f5fd3e468c82f57f4bff718,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 7818006484020157171}
   - component: {fileID: 7818006484020157168}
   m_Layer: 0
-  m_Name: BasicRobot
+  m_Name: HoverRobot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -135,9 +135,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 67e8514aae107184c94708ab7e222935, type: 2}
   - {fileID: 11400000, guid: 129a62cb738b1fd41acf4370638580ac, type: 2}
   - {fileID: 11400000, guid: 617ecd883a61d6d4684391e37960b18b, type: 2}
+  - {fileID: 11400000, guid: 7bc37be8b9a8fac4f858a3adbaa64265, type: 2}
+  - {fileID: 11400000, guid: 6251b23d806b31b43840e670ac2459c8, type: 2}
   - {fileID: 11400000, guid: 70e61284fe89cbb47a0fedb2a2abb7be, type: 2}
   - {fileID: 11400000, guid: 96eff0197af6cfd4cb8b1d41b96da79d, type: 2}
-  Costs: 000000000000000001000000000000000000000000000000
+  Costs: 0000000001000000010000000000000000000000020000000000000000000000
 --- !u!114 &7818006484020157181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -150,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5845e77300469f6449c6a33583dce301, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 2
+  Speed: 2.5
 --- !u!114 &7818006484020157170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,10 +165,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 576195a0d5cc4c44d9c361a8a481324c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BaseDamage: 10
+  BaseDamage: 8
   DefenseDamage: 5
-  Value: 15
-  AttackSpeed: 1.8
+  Value: 18
+  AttackSpeed: 1.5
 --- !u!61 &7818006484020157171
 BoxCollider2D:
   m_ObjectHideFlags: 0

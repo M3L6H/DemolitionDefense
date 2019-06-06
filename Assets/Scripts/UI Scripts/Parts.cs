@@ -34,4 +34,9 @@ public class Parts : MonoBehaviour
         textBox.text = gm.Parts.ToString();
     }
 
+    protected void OnDestroy()
+    {
+        PartsChangedUIEvent.UnregisterListener(PartsChanged);
+    }
+
 }

@@ -14,8 +14,8 @@ public class WaveManager : MonoBehaviour
     public WaveEntry[] Waves;
 
     private GameManager gm;
-
-    private readonly float timeStep = 0.1f;
+    private WaveText waveText;
+    private WaveCounter waveCounter;
 
     protected void Awake()
     {
@@ -24,11 +24,26 @@ public class WaveManager : MonoBehaviour
         if (gm == null)
             Debug.LogError($"{name}: cannot find game manager!");
 
+        waveText = FindObjectOfType<WaveText>();
+
+        if (waveText == null)
+            Debug.LogError($"{name}: cannot find wave text!");
+
+        waveCounter = FindObjectOfType<WaveCounter>();
+
+        if (waveCounter == null)
+            Debug.LogError($"{name}: cannot find wave counter!");
+
         if (LevelMap == null)
             Debug.LogError($"{name}: No level map assigned!");
 
         // Register listeners
         GameStartEvent.RegisterListener(StartAssault);
+    }
+
+    protected void OnDestroy()
+    {
+        GameStartEvent.UnregisterListener(StartAssault);
     }
 
     /// <summary>
@@ -37,6 +52,7 @@ public class WaveManager : MonoBehaviour
     /// <param name="e">Details about the beginning of the event.</param>
     private void StartAssault(GameStartEvent e)
     {
+        waveCounter.SetCount(Waves.Length);
         StartCoroutine(WaveClockCoroutine());
     }
 
@@ -55,9 +71,7 @@ public class WaveManager : MonoBehaviour
     private IEnumerator WaitForLastEnemy()
     {
         while (FindObjectOfType<Enemy>() != null)
-            yield return new WaitForSeconds(timeStep * 5);
-
-        EndAssault();
+            yield return new WaitForSeconds(GameManager.TimeStep * 5);
     }
 
     // Main clock that iterates through the waves
@@ -71,7 +85,9 @@ public class WaveManager : MonoBehaviour
                 i--;
                 continue;
             }
-            yield return StartCoroutine(SpawnWaveCoroutine(i));
+            waveText.ShowText((i == Waves.Length - 1) ? "Last Wave" : $"Wave {i + 1}");
+            waveCounter.ShowWaves();
+            waveCounter.IncrementWave();
 
             // Wait for alloted amount of time
             float timeElapsed = 0f;
@@ -79,12 +95,17 @@ public class WaveManager : MonoBehaviour
             while (timeElapsed <= WaveCooldown / gm.GameSpeed)
             {
                 if (!gm.Paused)
-                    timeElapsed += timeStep;
-                yield return new WaitForSeconds(timeStep);
+                    timeElapsed += GameManager.TimeStep;
+                yield return new WaitForSeconds(GameManager.TimeStep);
             }
+
+            yield return StartCoroutine(SpawnWaveCoroutine(i));
+            yield return StartCoroutine(WaitForLastEnemy());
         }
 
-        StartCoroutine(WaitForLastEnemy());
+        yield return StartCoroutine(WaitForLastEnemy());
+
+        EndAssault();
     }
 
     // Responsible for spawning each of the enemies within a wave
@@ -109,8 +130,8 @@ public class WaveManager : MonoBehaviour
             while (timeElapsed <= SpawnSpeed / gm.GameSpeed)
             {
                 if (!gm.Paused)
-                    timeElapsed += timeStep;
-                yield return new WaitForSeconds(timeStep);
+                    timeElapsed += GameManager.TimeStep;
+                yield return new WaitForSeconds(GameManager.TimeStep);
             }
 
             // Progress through the enemy list

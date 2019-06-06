@@ -23,4 +23,9 @@ public class PauseButton : MonoBehaviour
         button.interactable = !e.Paused;
     }
 
+    protected void OnDestroy()
+    {
+        PauseEvent.UnregisterListener(GamePaused);
+    }
+
 }

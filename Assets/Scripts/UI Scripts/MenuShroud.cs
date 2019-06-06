@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using EventCallbacks;
 
-public class GameWonShroud : MonoBehaviour
+public class MenuShroud : MonoBehaviour
 {
 
     protected void Awake()
     {
         // Register listeners
-        GameWonEvent.RegisterListener(GameWon);
+        MenuEvent.RegisterListener(Menu);
     }
 
     protected void Start()
@@ -15,14 +15,14 @@ public class GameWonShroud : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private void GameWon(GameWonEvent e)
+    private void Menu(MenuEvent e)
     {
-        gameObject.SetActive(true);
+        gameObject.SetActive(e.MenuOpen);
     }
 
     protected void OnDestroy()
     {
-        GameWonEvent.UnregisterListener(GameWon);
+        MenuEvent.UnregisterListener(Menu);
     }
 
 }

@@ -40,6 +40,18 @@ namespace EventCallbacks
 
     }
 
+    public class MenuEvent : Event<MenuEvent>
+    {
+
+        public bool MenuOpen;
+
+        public MenuEvent()
+        {
+            LoggingLevel = 1;
+        }
+
+    }
+
     public class TileSoldEvent : Event<TileSoldEvent>
     {
 

@@ -2,8 +2,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using EventCallbacks;
-using UnityEngine.SceneManagement;
-using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,16 +15,21 @@ public class GameManager : MonoBehaviour
     public Tilemap LevelMap;
     public Tilemap ForbiddenMap;
 
-    public Scene NextLevel;
-    private LoadingScreen loadingScreen;
+    public string ThisLevel;
+    public string NextLevel;
 
     public bool Paused { get; private set; }
+    public bool MenuOpen { get; private set; }
     public float GameSpeed { get; private set; }
+
+    public static readonly float TimeStep = 0.1f;
 
     public static Dictionary<string, KeyCode> KeyBinds = new Dictionary<string, KeyCode>
     {
-        { "Toggle Pause", KeyCode.Space },
-        { "Fast Forward", KeyCode.F }
+        { "Repair", KeyCode.R },
+        { "Fast Forward", KeyCode.F },
+        { "Toggle Menu", KeyCode.Escape },
+        { "Toggle Pause", KeyCode.Space }
     };
 
     private Cursor cursor;
@@ -36,6 +39,7 @@ public class GameManager : MonoBehaviour
     private Dictionary<Vector3Int, Health> repairableObjects;
     private Dictionary<Vector3Int, int> repairableHealth;
     private MarketManager marketManager;
+    private SceneLoader sceneLoader;
 
     private GameState currentState;
     private enum GameState
@@ -44,7 +48,8 @@ public class GameManager : MonoBehaviour
         Playing,
         Paused,
         Over,
-        Won
+        Won,
+        Menu
     }
 
     protected void Awake()
@@ -52,6 +57,7 @@ public class GameManager : MonoBehaviour
         // Set up initial game state
         currentState = GameState.Start;
         Paused = true;
+        MenuOpen = false;
         fastForwarding = false;
         GameSpeed = 1f;
 
@@ -69,15 +75,15 @@ public class GameManager : MonoBehaviour
         if (cursor == null)
             Debug.LogError($"{name}: unable to find cursor!");
 
-        loadingScreen = FindObjectOfType<LoadingScreen>();
-
-        if (loadingScreen == null)
-            Debug.LogError($"{name}: unable to find loading screen!");
-
         marketManager = FindObjectOfType<MarketManager>();
 
         if (marketManager == null)
             Debug.LogError($"{name}: unable to find market manager!");
+
+        sceneLoader = FindObjectOfType<SceneLoader>();
+
+        if (sceneLoader == null)
+            Debug.LogError($"{name}: unable to find scene loader!");
 
         // Initializing the object dictionary list
         repairableObjects = new Dictionary<Vector3Int, Health>();
@@ -88,13 +94,26 @@ public class GameManager : MonoBehaviour
         TileDestroyedEvent.RegisterListener(TileDestroyed);
         EnemyRecycledEvent.RegisterListener(EnemyRecycled);
         GameWonEvent.RegisterListener(GameWon);
+
+    }
+
+    protected void OnDestroy()
+    {
+        BaseDamageEvent.UnregisterListener(DamageTaken);
+        TileDestroyedEvent.UnregisterListener(TileDestroyed);
+        EnemyRecycledEvent.UnregisterListener(EnemyRecycled);
+        GameWonEvent.UnregisterListener(GameWon);
     }
 
     protected void Update()
     {
-        // HACK: Bind this to the menu
-        if (Input.GetKeyDown(KeyCode.Escape))
-            Quit();
+        // Handle repairing
+        if (Input.GetKeyDown(KeyBinds["Repair"]))
+            RepairAll();
+
+        // Handle fast forwarding
+        if (Input.GetKeyDown(KeyBinds["Fast Forward"]) && currentState == GameState.Playing)
+            ToggleFastForward();
 
         // Handle pausing
         if (Input.GetKeyDown(KeyBinds["Toggle Pause"]))
@@ -105,9 +124,14 @@ public class GameManager : MonoBehaviour
                 UnPause();
         }
 
-        // Handle fast forwarding
-        if (Input.GetKeyDown(KeyBinds["Fast Forward"]) && currentState == GameState.Playing)
-            ToggleFastForward();
+        // Handle menu toggling
+        if (Input.GetKeyDown(KeyBinds["Toggle Menu"]))
+        {
+            if (MenuOpen)
+                CloseMenu();
+            else
+                OpenMenu();
+        }
     }
 
     /// <summary>
@@ -117,7 +141,7 @@ public class GameManager : MonoBehaviour
     {
         if (currentState != GameState.Start)
         {
-            Debug.LogError($"Game state error! Attempting to start level from {currentState}!");
+            Debug.LogWarning($"Game state warning! Attempting to start level from {currentState}!");
             return;
         }
 
@@ -138,7 +162,7 @@ public class GameManager : MonoBehaviour
     {
         if (currentState != GameState.Playing)
         {
-            Debug.LogError($"Game state error! Attempting to pause game from {currentState}!");
+            Debug.LogWarning($"Game state warning! Attempting to pause game from {currentState}!");
             return;
         }
 
@@ -160,7 +184,7 @@ public class GameManager : MonoBehaviour
     {
         if (currentState != GameState.Paused)
         {
-            Debug.LogError($"Game state error! Attempting to unpause game from {currentState}!");
+            Debug.LogWarning($"Game state warning! Attempting to unpause game from {currentState}!");
             return;
         }
 
@@ -176,13 +200,60 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Called whenever the in-game menu is opened.
+    /// </summary>
+    public void OpenMenu()
+    {
+        if (currentState != GameState.Paused && currentState != GameState.Playing)
+        {
+            Debug.LogWarning($"Game state warning! Attempting to open menu from {currentState}!");
+            return;
+        }
+
+        if (currentState == GameState.Playing)
+            Pause();
+
+        currentState = GameState.Menu;
+        MenuOpen = true;
+
+        MenuEvent e = new MenuEvent
+        {
+            Description = "Menu was opened.",
+            MenuOpen = MenuOpen
+        };
+        e.TriggerEvent();
+    }
+
+    /// <summary>
+    /// Called whenever the in-game menu is closed.
+    /// </summary>
+    public void CloseMenu()
+    {
+        if (currentState != GameState.Menu)
+        {
+            Debug.LogWarning($"Game state warning! Attempting to close menu from {currentState}!");
+            return;
+        }
+
+        currentState = GameState.Paused;
+        MenuOpen = false;
+
+        MenuEvent e = new MenuEvent
+        {
+            Description = "Menu was closed.",
+            MenuOpen = MenuOpen
+        };
+        e.TriggerEvent();
+    }
+
+    /// <summary>
     /// Called when the game is lost.
     /// </summary>
     public void GameOver()
     {
         if (currentState != GameState.Playing)
         {
-            Debug.LogError($"Game state error! Attempting to end game from {currentState}!");
+            Debug.LogWarning($"Game state warning! Attempting to end game from {currentState}!");
             return;
         }
 
@@ -211,7 +282,7 @@ public class GameManager : MonoBehaviour
     {
         if (currentState != GameState.Playing)
         {
-            Debug.LogError($"Game state error! Attempting to win game from {currentState}!");
+            Debug.LogWarning($"Game state warning! Attempting to win game from {currentState}!");
             return;
         }
 
@@ -299,10 +370,9 @@ public class GameManager : MonoBehaviour
     /// Called when the player places an object.
     /// </summary>
     /// <param name="objectToPlace">The object that is getting placed.</param>
-    public void PlaceObject(MarketItem objectToPlace)
+    public void PlaceObject(MarketItem objectToPlace, bool second)
     {
-        Parts -= objectToPlace.Price;
-        LevelMap.SetTile(cursor.MouseGridPos, objectToPlace.Tile);
+        LevelMap.SetTile(cursor.MouseGridPos, second ? objectToPlace.SecondTile : objectToPlace.Tile);
 
         TileUpdateEvent e = new TileUpdateEvent
         {
@@ -310,12 +380,17 @@ public class GameManager : MonoBehaviour
         };
         e.TriggerEvent();
 
-        PartsChangedUIEvent uiEvent = new PartsChangedUIEvent
+        if (!second)
         {
-            Description = $"There are now {Parts} parts remaining."
-        };
+            Parts -= objectToPlace.Price;
 
-        uiEvent.TriggerEvent();
+            PartsChangedUIEvent uiEvent = new PartsChangedUIEvent
+            {
+                Description = $"There are now {Parts} parts remaining."
+            };
+
+            uiEvent.TriggerEvent();
+        }
     }
 
     /// <summary>
@@ -360,36 +435,16 @@ public class GameManager : MonoBehaviour
         e.TriggerEvent();
     }
 
-    /// <summary>
-    /// Called to load the subsequent level. Defers to an asynchronous load function.
-    /// </summary>
-    public void LoadNextLevel()
-    {
-        if (NextLevel == null)
-        {
-            Debug.LogError("No next level defined!");
-            return;
-        }
-
-        loadingScreen.gameObject.SetActive(true);
-        StartCoroutine(LoadSceneAsync());
-    }
-
-    private IEnumerator LoadSceneAsync()
-    {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(NextLevel.buildIndex);
-
-        while (!asyncLoad.isDone)
-        {
-            yield return null;
-        }
-    }
-
-    // HACK: Need a separate class for this 
-    // Called from the main menu to start the game
+    // Called to start level
     public void StartGame()
     {
-        SceneManager.LoadScene("Development");
+        sceneLoader.LoadLevel(ThisLevel);
+    }
+
+    // Called to start the next level
+    public void LoadNextLevel()
+    {
+        sceneLoader.LoadLevel(NextLevel);
     }
 
     // Called when the user wants to quit the application

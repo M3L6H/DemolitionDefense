@@ -17,4 +17,9 @@ public class GameOverShroud : MonoBehaviour
         gameObject.SetActive(true);
     }
 
+    protected void OnDestroy()
+    {
+        GameOverEvent.UnregisterListener(GameOver);
+    }
+
 }

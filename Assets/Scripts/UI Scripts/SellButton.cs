@@ -39,7 +39,7 @@ public class SellButton : MonoBehaviour
         // Get mouse position in the world
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        if (Vector2.Distance(mousePos, transform.position) < Threshold)
+        if (Vector2.Distance(mousePos, transform.position) < Threshold && !gm.MenuOpen)
         {
             available = true;
             if (Input.GetMouseButtonDown(0))

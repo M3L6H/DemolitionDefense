@@ -26,4 +26,9 @@ public class FastForwardButton : MonoBehaviour
             buttonImage.color = Color.white;
     }
 
+    protected void OnDestroy()
+    {
+        FastForwardEvent.UnregisterListener(FastForwarded);
+    }
+
 }

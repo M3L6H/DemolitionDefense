@@ -71,5 +71,18 @@ public class MarketItem
     public int Price;
     public Sprite Icon;
     public TileBase Tile;
+    public bool Rotates;
+    public TileBase NorthTile;
+    public TileBase SouthTile;
+    public TileBase EastTile;
+    public TileBase WestTile;
+    public bool HasSecond;
+    public Sprite SecondIcon;
+    public TileBase SecondTile;
+    public bool MultiTile;
+    public bool N;
+    public bool S;
+    public bool E;
+    public bool W;
 
 }

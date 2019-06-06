@@ -92,7 +92,16 @@ public class Enemy : MonoBehaviour
                 foreach (TileDamageEvent e in damageEvents)
                     e.TriggerEvent();
             }
-            yield return new WaitForSeconds(AttackSpeed);
+
+            // Wait for alloted amount of time
+            float timeElapsed = 0f;
+
+            while (timeElapsed <= AttackSpeed / gm.GameSpeed)
+            {
+                if (!gm.Paused)
+                    timeElapsed += GameManager.TimeStep;
+                yield return new WaitForSeconds(GameManager.TimeStep);
+            }
         }
     }
 
@@ -126,7 +135,7 @@ public class Enemy : MonoBehaviour
     protected void OnTriggerEnter2D(Collider2D collision)
     {
         // Enemies should not recycle each other
-        if (collision.gameObject.GetComponent<Enemy>() == null)
+        if (collision.gameObject.GetComponentInParent<Recycler>() != null)
             Recycle();
     }
 

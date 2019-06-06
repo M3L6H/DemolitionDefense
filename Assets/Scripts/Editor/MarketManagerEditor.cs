@@ -63,13 +63,19 @@ public class MarketManagerEditor : Editor
                 EditorGUILayout.BeginVertical();
                 EditorGUILayout.LabelField("Price", GUILayout.Width(80));
                 EditorGUILayout.LabelField("Icon", GUILayout.Width(80));
+                EditorGUILayout.LabelField("Rotates", GUILayout.Width(80));
+                EditorGUILayout.LabelField("Multi", GUILayout.Width(80));
                 EditorGUILayout.EndVertical();
 
                 // Fields
                 EditorGUILayout.BeginVertical();
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("Price"),
-                    GUIContent.none);
+                    GUIContent.none, GUILayout.Width(150f));
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("Icon"),
+                    GUIContent.none, GUILayout.Width(150f));
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("Rotates"),
+                    GUIContent.none, GUILayout.Width(150f));
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("MultiTile"),
                     GUIContent.none, GUILayout.Width(150f));
                 EditorGUILayout.EndVertical();
 
@@ -77,23 +83,127 @@ public class MarketManagerEditor : Editor
                 EditorGUILayout.BeginVertical();
                 EditorGUILayout.LabelField("Enabled", GUILayout.Width(80));
                 EditorGUILayout.LabelField("Tile", GUILayout.Width(80));
+                EditorGUILayout.LabelField("Second", GUILayout.Width(80));
                 EditorGUILayout.EndVertical();
 
                 // Fields
                 EditorGUILayout.BeginVertical();
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("Enabled"),
-                    GUIContent.none);
+                    GUIContent.none, GUILayout.Width(150f));
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("Tile"),
+                    GUIContent.none, GUILayout.Width(150f));
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("HasSecond"),
                     GUIContent.none, GUILayout.Width(150f));
                 EditorGUILayout.EndVertical();
 
                 EditorGUILayout.EndHorizontal();
+
+                if (((MarketManager)target).Items[i].Rotates)
+                    ShowRotation(serializedObject, i);
+
+                if (((MarketManager)target).Items[i].HasSecond)
+                    ShowHasSecond(serializedObject, i);
+
+                if (((MarketManager)target).Items[i].MultiTile)
+                    ShowMultiTile(serializedObject, i);
+
                 EditorGUI.indentLevel -= 1;
             }
             EditorGUI.indentLevel -= 1;
         }
 
         serializedObject.ApplyModifiedProperties();
+    }
+
+    private static void ShowMultiTile(SerializedObject serializedObject, int i)
+    {
+        EditorGUILayout.BeginHorizontal();
+
+        // Labels
+        EditorGUILayout.LabelField("N", GUILayout.Width(20));
+
+        // Fields
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("N"),
+            GUIContent.none, GUILayout.Width(30f));
+
+        // Labels
+        EditorGUILayout.LabelField("S", GUILayout.Width(20));
+
+        // Fields
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("S"),
+            GUIContent.none, GUILayout.Width(30f));
+
+        // Labels
+        EditorGUILayout.LabelField("E", GUILayout.Width(20));
+
+        // Fields
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("E"),
+            GUIContent.none, GUILayout.Width(30f));
+
+        // Labels
+        EditorGUILayout.LabelField("W", GUILayout.Width(20));
+
+        // Fields
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("W"),
+            GUIContent.none, GUILayout.Width(30f));
+
+        EditorGUILayout.EndHorizontal();
+    }
+
+    private static void ShowHasSecond(SerializedObject serializedObject, int i)
+    {
+        EditorGUILayout.BeginHorizontal();
+
+        // Labels
+        EditorGUILayout.LabelField("Icon", GUILayout.Width(80));
+
+        // Fields
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("SecondIcon"),
+            GUIContent.none, GUILayout.Width(150f));
+
+        // Labels
+        EditorGUILayout.LabelField("Tile", GUILayout.Width(80));
+
+        // Fields
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("SecondTile"),
+            GUIContent.none, GUILayout.Width(150f));
+
+        EditorGUILayout.EndHorizontal();
+    }
+
+    private static void ShowRotation(SerializedObject serializedObject, int i)
+    {
+        EditorGUILayout.BeginHorizontal();
+
+        // Labels
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.LabelField("North", GUILayout.Width(80));
+        EditorGUILayout.LabelField("East", GUILayout.Width(80));
+        EditorGUILayout.EndVertical();
+
+        // Fields
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("NorthTile"),
+            GUIContent.none, GUILayout.Width(150f));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("EastTile"),
+            GUIContent.none, GUILayout.Width(150f));
+        EditorGUILayout.EndVertical();
+
+        // Labels
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.LabelField("South", GUILayout.Width(80));
+        EditorGUILayout.LabelField("West", GUILayout.Width(80));
+        EditorGUILayout.EndVertical();
+
+        // Fields
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("SouthTile"),
+            GUIContent.none, GUILayout.Width(150f));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("WestTile"),
+            GUIContent.none, GUILayout.Width(150f));
+        EditorGUILayout.EndVertical();
+
+        EditorGUILayout.EndHorizontal();
     }
 
     private static void ShowAddRemoveButtons(SerializedProperty list)

@@ -29,4 +29,9 @@ public class Source : MonoBehaviour
         pathing.CalculatePath();
     }
 
+    protected void OnDestroy()
+    {
+        TileUpdateEvent.UnregisterListener(TileUpdated);
+    }
+
 }

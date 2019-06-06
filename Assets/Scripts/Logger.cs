@@ -10,6 +10,8 @@ public class Logger : MonoBehaviour
     protected void Awake()
     {
         PauseEvent.RegisterListener(LogEvent);
+        MenuEvent.RegisterListener(LogEvent);
+        TileSoldEvent.RegisterListener(LogEvent);
         TileDestroyedEvent.RegisterListener(LogEvent);
         TileDamageEvent.RegisterListener(LogEvent);
         TileUpdateEvent.RegisterListener(LogEvent);
@@ -22,10 +24,40 @@ public class Logger : MonoBehaviour
         GameOverEvent.RegisterListener(LogEvent);
         GameWonEvent.RegisterListener(LogEvent);
         FastForwardEvent.RegisterListener(LogEvent);
-        TileSoldEvent.RegisterListener(LogEvent);
+    }
+
+    protected void OnDestroy()
+    {
+        PauseEvent.UnregisterListener(LogEvent);
+        MenuEvent.UnregisterListener(LogEvent);
+        TileSoldEvent.UnregisterListener(LogEvent);
+        TileDestroyedEvent.UnregisterListener(LogEvent);
+        TileDamageEvent.UnregisterListener(LogEvent);
+        TileUpdateEvent.UnregisterListener(LogEvent);
+        BaseDamageEvent.UnregisterListener(LogEvent);
+        BaseDamageUIEvent.UnregisterListener(LogEvent);
+        PurchaseMadeEvent.UnregisterListener(LogEvent);
+        PartsChangedUIEvent.UnregisterListener(LogEvent);
+        EnemyRecycledEvent.UnregisterListener(LogEvent);
+        GameStartEvent.UnregisterListener(LogEvent);
+        GameOverEvent.UnregisterListener(LogEvent);
+        GameWonEvent.UnregisterListener(LogEvent);
+        FastForwardEvent.UnregisterListener(LogEvent);
     }
 
     private void LogEvent(PauseEvent e)
+    {
+        if (e.LoggingLevel <= LoggingLevel)
+            Debug.Log(e.Description);
+    }
+
+    private void LogEvent(MenuEvent e)
+    {
+        if (e.LoggingLevel <= LoggingLevel)
+            Debug.Log(e.Description);
+    }
+
+    private void LogEvent(TileSoldEvent e)
     {
         if (e.LoggingLevel <= LoggingLevel)
             Debug.Log(e.Description);
@@ -98,12 +130,6 @@ public class Logger : MonoBehaviour
     }
 
     private void LogEvent(FastForwardEvent e)
-    {
-        if (e.LoggingLevel <= LoggingLevel)
-            Debug.Log(e.Description);
-    }
-
-    private void LogEvent(TileSoldEvent e)
     {
         if (e.LoggingLevel <= LoggingLevel)
             Debug.Log(e.Description);

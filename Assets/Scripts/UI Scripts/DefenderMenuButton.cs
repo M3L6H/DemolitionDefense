@@ -53,7 +53,9 @@ public class DefenderMenuButton : MonoBehaviour
 
         Disabled = false;
 
+        // Register event listeners
         GameOverEvent.RegisterListener(GameOver);
+        MenuEvent.RegisterListener(Menu);
     }
 
     public void ToggleMenu()
@@ -118,6 +120,11 @@ public class DefenderMenuButton : MonoBehaviour
     private void GameOver(GameOverEvent e)
     {
         Disabled = true;
+    }
+
+    private void Menu(MenuEvent e)
+    {
+        Disabled = e.MenuOpen;
     }
 
 }

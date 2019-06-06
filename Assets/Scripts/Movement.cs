@@ -66,6 +66,12 @@ public class Movement : MonoBehaviour
         CalculatePath();
     }
 
+    // Called when something external moves us
+    public void Moved()
+    {
+        CalculatePath();
+    }
+
     // Calculate our path and reset our path index accordingly
     private void CalculatePath()
     {

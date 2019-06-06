@@ -34,4 +34,9 @@ public class BaseHealth : MonoBehaviour
         textBox.text = gm.BaseHealth.ToString();
     }
 
+    protected void OnDestroy()
+    {
+        BaseDamageUIEvent.UnregisterListener(BaseDamaged);
+    }
+
 }

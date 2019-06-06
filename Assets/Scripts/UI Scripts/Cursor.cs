@@ -19,6 +19,7 @@ public class Cursor : MonoBehaviour
     private DefenderMenuButton defenderMenuButton;
 
     private bool placing = false;
+    private bool second = false;
     private MarketItem toPlace;
 
     protected void Awake()
@@ -54,6 +55,7 @@ public class Cursor : MonoBehaviour
         GameOverEvent.RegisterListener(GameOver);
         GameWonEvent.RegisterListener(GameWon);
         GameStartEvent.RegisterListener(GameStart);
+        MenuEvent.RegisterListener(Menu);
     }
 
     private void GameStart(GameStartEvent e)
@@ -69,6 +71,19 @@ public class Cursor : MonoBehaviour
     private void GameOver(GameOverEvent e)
     {
         CursorDisabled = true;
+    }
+
+    private void Menu(MenuEvent e)
+    {
+        CursorDisabled = e.MenuOpen;
+    }
+
+    protected void OnDestroy()
+    {
+        GameOverEvent.UnregisterListener(GameOver);
+        GameWonEvent.UnregisterListener(GameWon);
+        GameStartEvent.UnregisterListener(GameStart);
+        MenuEvent.UnregisterListener(Menu);
     }
 
     protected void Update()
@@ -90,17 +105,25 @@ public class Cursor : MonoBehaviour
                 // We are placing in a valid location
                 if (!ForbiddenMap.HasTile(MouseGridPos))
                 {
-                    gm.PlaceObject(toPlace);
+                    gm.PlaceObject(toPlace, second);
                     ForbiddenMap.SetTile(MouseGridPos, ForbiddenTile);
                     EndPlacing();
-                    if (gm.Parts >= toPlace.Price)
+                    if (toPlace.HasSecond)
+                    {
+                        if (!second)
+                        {
+                            second = true;
+                            BeginPlacing(toPlace, second);
+                        } else
+                            second = false;
+                    } else if (gm.Parts >= toPlace.Price)
                         BeginPlacing(toPlace);
                 }
             }
         }
     }
 
-    public void BeginPlacing(MarketItem toPlace)
+    public void BeginPlacing(MarketItem toPlace, bool second = false)
     {
         if (CursorDisabled)
             return;
@@ -109,7 +132,7 @@ public class Cursor : MonoBehaviour
 
         ForbiddenMap.gameObject.SetActive(true);
         this.toPlace = toPlace;
-        spriteRenderer.sprite = toPlace.Icon;
+        spriteRenderer.sprite = second ? toPlace.SecondIcon : toPlace.Icon;
         placing = true;
     }
 
