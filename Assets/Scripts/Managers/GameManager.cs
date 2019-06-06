@@ -24,12 +24,13 @@ public class GameManager : MonoBehaviour
 
     public static readonly float TimeStep = 0.1f;
 
-    public static Dictionary<string, KeyCode> KeyBinds = new Dictionary<string, KeyCode>
+    public static readonly Dictionary<string, KeyCode> KeyBinds = new Dictionary<string, KeyCode>
     {
         { "Repair", KeyCode.R },
         { "Fast Forward", KeyCode.F },
         { "Toggle Menu", KeyCode.Escape },
-        { "Toggle Pause", KeyCode.Space }
+        { "Toggle Pause", KeyCode.Space },
+        { "Rotate", KeyCode.Tab }
     };
 
     private Cursor cursor;
@@ -370,9 +371,26 @@ public class GameManager : MonoBehaviour
     /// Called when the player places an object.
     /// </summary>
     /// <param name="objectToPlace">The object that is getting placed.</param>
-    public void PlaceObject(MarketItem objectToPlace, bool second)
+    public void PlaceObject(MarketItem objectToPlace, bool second, CardinalDirection direction)
     {
-        LevelMap.SetTile(cursor.MouseGridPos, second ? objectToPlace.SecondTile : objectToPlace.Tile);
+        if (direction == CardinalDirection.North)
+            LevelMap.SetTile(cursor.MouseGridPos, second ? objectToPlace.SecondTile : objectToPlace.Tile);
+        else
+        {
+            switch(direction)
+            {
+                case CardinalDirection.South:
+                    LevelMap.SetTile(cursor.MouseGridPos, objectToPlace.SouthTile);
+                    break;
+                case CardinalDirection.East:
+                    LevelMap.SetTile(cursor.MouseGridPos, objectToPlace.EastTile);
+                    break;
+                case CardinalDirection.West:
+                    LevelMap.SetTile(cursor.MouseGridPos, objectToPlace.WestTile);
+                    break;
+            }
+        }
+            
 
         TileUpdateEvent e = new TileUpdateEvent
         {
@@ -421,16 +439,28 @@ public class GameManager : MonoBehaviour
 
         uiEvent.TriggerEvent();
 
-        LevelMap.SetTile(location, Dirt);
-        ForbiddenMap.SetTile(location, null);
-        repairableObjects.Remove(location);
-        repairableHealth.Remove(location);
-
         TileSoldEvent e = new TileSoldEvent
         {
             Description = $"Tile at {(Vector2Int)location} sold for {returnValue} parts.",
             CellLoc = (Vector2Int)location,
             ReturnValue = returnValue
+        };
+        e.TriggerEvent();
+
+        DestroyTile(location);
+    }
+
+    public void DestroyTile(Vector3Int location)
+    {
+        LevelMap.SetTile(location, Dirt);
+        ForbiddenMap.SetTile(location, null);
+        repairableObjects.Remove(location);
+        repairableHealth.Remove(location);
+
+        TileDestroyedEvent e = new TileDestroyedEvent()
+        {
+            Description = $"Tile at {(Vector2Int)location} destroyed.",
+            CellLoc = (Vector2Int)location
         };
         e.TriggerEvent();
     }

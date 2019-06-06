@@ -120,32 +120,32 @@ public class MarketManagerEditor : Editor
         EditorGUILayout.BeginHorizontal();
 
         // Labels
-        EditorGUILayout.LabelField("N", GUILayout.Width(20));
+        EditorGUILayout.LabelField("N", GUILayout.Width(50f));
 
         // Fields
         EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("N"),
-            GUIContent.none, GUILayout.Width(30f));
+            GUIContent.none, GUILayout.Width(50f));
 
         // Labels
-        EditorGUILayout.LabelField("S", GUILayout.Width(20));
+        EditorGUILayout.LabelField("S", GUILayout.Width(50f));
 
         // Fields
         EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("S"),
-            GUIContent.none, GUILayout.Width(30f));
+            GUIContent.none, GUILayout.Width(50f));
 
         // Labels
-        EditorGUILayout.LabelField("E", GUILayout.Width(20));
+        EditorGUILayout.LabelField("E", GUILayout.Width(50f));
 
         // Fields
         EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("E"),
-            GUIContent.none, GUILayout.Width(30f));
+            GUIContent.none, GUILayout.Width(50f));
 
         // Labels
-        EditorGUILayout.LabelField("W", GUILayout.Width(20));
+        EditorGUILayout.LabelField("W", GUILayout.Width(50f));
 
         // Fields
         EditorGUILayout.PropertyField(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("W"),
-            GUIContent.none, GUILayout.Width(30f));
+            GUIContent.none, GUILayout.Width(50f));
 
         EditorGUILayout.EndHorizontal();
     }

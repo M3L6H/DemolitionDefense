@@ -1,10 +1,14 @@
 ﻿using UnityEngine;
+using UnityEngine.Tilemaps;
 using EventCallbacks;
 
 public class Movement : MonoBehaviour
 {
 
     public float Speed = 1f;
+    public bool Heavy = false;
+    public bool Flying = false;
+    public TileBase Hole;
 
     private GameManager gm;
 
@@ -12,9 +16,15 @@ public class Movement : MonoBehaviour
     // Keep track of what point we are at in our path
     private int pathIndex;
     private SpriteRenderer graphic;
+    private bool beingMoved = false;
+    private float movedSpeed;
+    private Vector3 movedTargetLoc;
 
     protected void Awake()
     {
+        if (Hole == null)
+            Debug.LogError($"{name}: no hole assigned!");
+
         gm = FindObjectOfType<GameManager>();
 
         if (gm == null)
@@ -41,16 +51,27 @@ public class Movement : MonoBehaviour
 
     protected void Update()
     {
-        if (pathIndex >= 0 && pathIndex < pathing.Path.Count)
+        if (beingMoved)
         {
-            if (Arrived())
-                pathIndex++;
-
-            if (!gm.Paused && pathIndex < pathing.Path.Count)
+            transform.position += (movedTargetLoc - transform.position).normalized * movedSpeed * Time.deltaTime * gm.GameSpeed;
+            if (Vector2.Distance(transform.position, movedTargetLoc) < 0.05f * gm.GameSpeed)
             {
-                Vector2 direction = pathing.Path[pathIndex] - (Vector2)transform.position;
-                graphic.transform.right = direction;
-                transform.position += (Vector3)direction.normalized * Speed * gm.GameSpeed * Time.deltaTime;
+                beingMoved = false;
+                Moved();
+            }
+        } else
+        {
+            if (pathIndex >= 0 && pathIndex < pathing.Path.Count)
+            {
+                if (Arrived())
+                    pathIndex++;
+
+                if (!gm.Paused && pathIndex < pathing.Path.Count)
+                {
+                    Vector2 direction = pathing.Path[pathIndex] - (Vector2)transform.position;
+                    graphic.transform.right = direction;
+                    transform.position += (Vector3)direction.normalized * Speed * gm.GameSpeed * Time.deltaTime;
+                }
             }
         }
     }
@@ -58,6 +79,13 @@ public class Movement : MonoBehaviour
     protected void OnDestroy()
     {
         TileUpdateEvent.UnregisterListener(TileUpdated);
+    }
+
+    public void MoveTo(Vector3 targetLoc, float speed)
+    {
+        beingMoved = true;
+        movedTargetLoc = targetLoc;
+        movedSpeed = speed;
     }
 
     // Recalculate our path when tiles have updated
@@ -69,6 +97,9 @@ public class Movement : MonoBehaviour
     // Called when something external moves us
     public void Moved()
     {
+        Vector3 roundedLoc = new Vector3(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y), 0);
+        if (!Flying && pathing.LevelMap.GetTile(pathing.LevelMap.LocalToCell(roundedLoc)) == Hole)
+            Destroy(gameObject);
         CalculatePath();
     }
 

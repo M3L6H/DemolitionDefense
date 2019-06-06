@@ -3,7 +3,7 @@
 public class TrapOut : MonoBehaviour
 {
 
-    public bool Paired { get; private set; }
+    public bool Paired;
 
     private TrapIn trapIn;
 
@@ -26,6 +26,17 @@ public class TrapOut : MonoBehaviour
                 break;
             }
         }
+    }
+
+    public void SetIn(TrapIn trapIn)
+    {
+        this.trapIn = trapIn;
+        Paired = true;
+    }
+
+    protected void OnDestroy()
+    {
+        trapIn.Paired = false;
     }
 
 }

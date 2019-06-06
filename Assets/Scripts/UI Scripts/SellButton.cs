@@ -50,6 +50,7 @@ public class SellButton : MonoBehaviour
                 // We were clicked
                 if (hit.collider != null && hit.collider.transform == transform)
                 {
+                    Debug.Log("Selling");   
                     gm.SellObject(grid.LocalToCell(transform.position));
                 }
             }

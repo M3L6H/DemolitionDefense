@@ -35,8 +35,8 @@ public class Health : MonoBehaviour
     protected void Start()
     {
         int oldHealth = gm.GetHealth(grid.LocalToCell(transform.position));
-        gm.AddRepairable(grid.LocalToCell(transform.position), this);
         CurrentHealth = (oldHealth == -1) ? MaxHealth : oldHealth;
+        gm.AddRepairable(grid.LocalToCell(transform.position), this);
         healthBar = Instantiate(HealthBarPrefab, transform.position + Vector3.up * 0.2f, Quaternion.identity, transform);
         healthBar.percentage = (float)CurrentHealth / MaxHealth;
     }

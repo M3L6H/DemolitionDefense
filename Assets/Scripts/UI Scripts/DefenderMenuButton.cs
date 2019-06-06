@@ -51,11 +51,19 @@ public class DefenderMenuButton : MonoBehaviour
 
         button.onClick.AddListener(ToggleMenu);
 
-        Disabled = false;
+        Disabled = true;
 
         // Register event listeners
         GameOverEvent.RegisterListener(GameOver);
         MenuEvent.RegisterListener(Menu);
+        GameStartEvent.RegisterListener(GameStart);
+    }
+
+    protected void OnDestroy()
+    {
+        GameOverEvent.UnregisterListener(GameOver);
+        MenuEvent.UnregisterListener(Menu);
+        GameStartEvent.UnregisterListener(GameStart);
     }
 
     public void ToggleMenu()
@@ -115,6 +123,11 @@ public class DefenderMenuButton : MonoBehaviour
             button.interactable = false;
         }
 
+    }
+
+    private void GameStart(GameStartEvent e)
+    {
+        Disabled = false;
     }
 
     private void GameOver(GameOverEvent e)

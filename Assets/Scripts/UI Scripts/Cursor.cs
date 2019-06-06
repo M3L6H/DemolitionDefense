@@ -20,6 +20,7 @@ public class Cursor : MonoBehaviour
 
     private bool placing = false;
     private bool second = false;
+    private CardinalDirection direction;
     private MarketItem toPlace;
 
     protected void Awake()
@@ -98,6 +99,26 @@ public class Cursor : MonoBehaviour
 
         if (placing)
         {
+            if (toPlace.Rotates && Input.GetKeyDown(GameManager.KeyBinds["Rotate"]))
+            {
+                direction = (CardinalDirection)(((int)direction + 1) % 4);
+                switch(direction)
+                {
+                    case CardinalDirection.North:
+                        spriteRenderer.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+                        break;
+                    case CardinalDirection.South:
+                        spriteRenderer.transform.rotation = Quaternion.Euler(0f, 0f, 180f);
+                        break;
+                    case CardinalDirection.East:
+                        spriteRenderer.transform.rotation = Quaternion.Euler(0f, 0f, -90f);
+                        break;
+                    case CardinalDirection.West:
+                        spriteRenderer.transform.rotation = Quaternion.Euler(0f, 0f, 90f);
+                        break;
+                }
+            }
+
             if (Input.GetMouseButtonUp(1))
                 EndPlacing();
             else if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
@@ -105,7 +126,7 @@ public class Cursor : MonoBehaviour
                 // We are placing in a valid location
                 if (!ForbiddenMap.HasTile(MouseGridPos))
                 {
-                    gm.PlaceObject(toPlace, second);
+                    gm.PlaceObject(toPlace, second, direction);
                     ForbiddenMap.SetTile(MouseGridPos, ForbiddenTile);
                     EndPlacing();
                     if (toPlace.HasSecond)
@@ -133,6 +154,12 @@ public class Cursor : MonoBehaviour
         ForbiddenMap.gameObject.SetActive(true);
         this.toPlace = toPlace;
         spriteRenderer.sprite = second ? toPlace.SecondIcon : toPlace.Icon;
+        if (!toPlace.Rotates)
+        {
+            direction = CardinalDirection.North;
+            spriteRenderer.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        }
+        second = false;
         placing = true;
     }
 

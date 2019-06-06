@@ -71,6 +71,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 1.5
+  Heavy: 0
+  Flying: 0
+  Hole: {fileID: 11400000, guid: 7bc37be8b9a8fac4f858a3adbaa64265, type: 2}
 --- !u!114 &388926533471319511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,7 +114,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 0.1, y: 0.1}
   m_EdgeRadius: 0
 --- !u!50 &388926533471319509
 Rigidbody2D:
