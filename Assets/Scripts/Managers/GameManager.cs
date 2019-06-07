@@ -146,14 +146,14 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        currentState = GameState.Paused;
-
         GameStartEvent e = new GameStartEvent
         {
             Description = $"Assault has started!"
         };
-
         e.TriggerEvent();
+
+        currentState = GameState.Paused;
+        UnPause();
     }
 
     /// <summary>

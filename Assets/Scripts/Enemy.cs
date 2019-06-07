@@ -112,24 +112,6 @@ public class Enemy : MonoBehaviour
                                                                           0f));
         if (currCellLoc != CellLoc)
             CellLoc = currCellLoc;
-
-        foreach(Goal g in pathing.Goals)
-        {
-            // We have invaded the base
-            if (Vector3.Distance(transform.position, g.transform.position) < 0.2f)
-            {
-                // Create base damage event and broadcast it
-                BaseDamageEvent e = new BaseDamageEvent
-                {
-                    Description = $"{name} invaded the base dealing {BaseDamage} damage.",
-                    DamageAmount = BaseDamage
-                };
-
-                e.TriggerEvent(); 
-
-                Destroy(gameObject);
-            }
-        }
     }
 
     protected void OnTriggerEnter2D(Collider2D collision)
@@ -137,6 +119,23 @@ public class Enemy : MonoBehaviour
         // Enemies should not recycle each other
         if (collision.gameObject.GetComponentInParent<Recycler>() != null)
             Recycle();
+
+        if (collision.gameObject.GetComponent<Goal>() != null)
+            DamageBase();
+    }
+
+    private void DamageBase()
+    {
+        // Create base damage event and broadcast it
+        BaseDamageEvent e = new BaseDamageEvent
+        {
+            Description = $"{name} invaded the base dealing {BaseDamage} damage.",
+            DamageAmount = BaseDamage
+        };
+
+        e.TriggerEvent();
+
+        Destroy(gameObject);
     }
 
     public void Recycle()
