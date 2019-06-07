@@ -29,11 +29,11 @@ public class SceneLoader : MonoBehaviour
             scenesInBuild.Add(scenePath.Substring(lastSlash + 1, scenePath.LastIndexOf(".") - lastSlash - 1));
         }
 
-        if (!scenesInBuild.Contains(levelName))
-        {
-            Debug.LogError($"{name}: Scene does not exist!");
-            return;
-        }
+        //if (!scenesInBuild.Contains(levelName))
+        //{
+        //    Debug.LogError($"{name}: Scene does not exist!");
+        //    return;
+        //}
 
         loadingScreen.gameObject.SetActive(true);
         StartCoroutine(LoadSceneAsync(levelName));
@@ -47,6 +47,11 @@ public class SceneLoader : MonoBehaviour
         {
             yield return null;
         }
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
     }
 
 }

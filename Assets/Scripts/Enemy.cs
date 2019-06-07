@@ -96,7 +96,7 @@ public class Enemy : MonoBehaviour
             // Wait for alloted amount of time
             float timeElapsed = 0f;
 
-            while (timeElapsed <= AttackSpeed / gm.GameSpeed)
+            while (timeElapsed <= AttackSpeed * 0.5f / gm.GameSpeed)
             {
                 if (!gm.Paused)
                     timeElapsed += GameManager.TimeStep;

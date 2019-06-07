@@ -15,7 +15,7 @@ public class Movement : MonoBehaviour
     private Pathing pathing;
     // Keep track of what point we are at in our path
     private int pathIndex;
-    private SpriteRenderer graphic;
+    private SpriteRenderer[] graphics;
     private bool beingMoved = false;
     private float movedSpeed;
     private Vector3 movedTargetLoc;
@@ -35,9 +35,9 @@ public class Movement : MonoBehaviour
         if (pathing == null)
             Debug.LogError($"{name}: No pathing component attached!");
 
-        graphic = GetComponentInChildren<SpriteRenderer>();
+        graphics = GetComponentsInChildren<SpriteRenderer>();
 
-        if (graphic == null)
+        if (graphics[0] == null)
             Debug.LogError($"{name}: missing child graphic object!");
 
         // Register listeners
@@ -69,7 +69,8 @@ public class Movement : MonoBehaviour
                 if (!gm.Paused && pathIndex < pathing.Path.Count)
                 {
                     Vector2 direction = pathing.Path[pathIndex] - (Vector2)transform.position;
-                    graphic.transform.right = direction;
+                    foreach (SpriteRenderer graphic in graphics)
+                        graphic.transform.right = direction;
                     transform.position += (Vector3)direction.normalized * Speed * gm.GameSpeed * Time.deltaTime;
                 }
             }

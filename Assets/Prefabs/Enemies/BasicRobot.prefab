@@ -137,7 +137,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 617ecd883a61d6d4684391e37960b18b, type: 2}
   - {fileID: 11400000, guid: 70e61284fe89cbb47a0fedb2a2abb7be, type: 2}
   - {fileID: 11400000, guid: 96eff0197af6cfd4cb8b1d41b96da79d, type: 2}
-  Costs: 000000000000000001000000000000000000000000000000
+  Costs: 000000000000000000000000000000000000000000000000
 --- !u!114 &7818006484020157181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,7 +168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BaseDamage: 10
   DefenseDamage: 5
-  Value: 15
+  Value: 10
   AttackSpeed: 1.8
 --- !u!61 &7818006484020157171
 BoxCollider2D:

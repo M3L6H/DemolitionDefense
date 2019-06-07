@@ -13,7 +13,7 @@ public class Recycler : MonoBehaviour
 
     protected void Start()
     {
-        GameObject colliderObj = Instantiate(Collider);
+        GameObject colliderObj = Instantiate(Collider, transform);
         colliderObj.transform.position = transform.position;
     }
 

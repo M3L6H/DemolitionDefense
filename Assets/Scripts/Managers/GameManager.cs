@@ -339,6 +339,7 @@ public class GameManager : MonoBehaviour
                 uiEvent.TriggerEvent();
 
                 obj.Value.Repair();
+                repairableHealth[obj.Key] = obj.Value.CurrentHealth;
             }
         }
     }
