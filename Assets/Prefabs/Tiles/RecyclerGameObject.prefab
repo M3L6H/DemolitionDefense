@@ -133,7 +133,6 @@ GameObject:
   - component: {fileID: 9053563684299352176}
   - component: {fileID: 9053563684299352183}
   - component: {fileID: 4499639337052506925}
-  - component: {fileID: -9185952029779661097}
   m_Layer: 0
   m_Name: RecyclerGameObject
   m_TagString: Untagged
@@ -219,20 +218,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Collider: {fileID: 8363137958850738766, guid: 0e8f9fb1fd8b5134aa0f9f91fb8d62c5,
-    type: 3}
---- !u!114 &-9185952029779661097
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9053563684299352182}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a092e561d81b237439c84a9dfcc0b9ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CurrentHealth: 15
-  MaxHealth: 400
-  HealthBarPrefab: {fileID: 8225558293017621606, guid: 5dd5df05018ca1243b0f60f00607b251,
     type: 3}

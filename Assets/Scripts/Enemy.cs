@@ -116,7 +116,7 @@ public class Enemy : MonoBehaviour
         foreach(Goal g in pathing.Goals)
         {
             // We have invaded the base
-            if (Vector3.Distance(transform.position, g.transform.position) < 0.1f)
+            if (Vector3.Distance(transform.position, g.transform.position) < 0.2f)
             {
                 // Create base damage event and broadcast it
                 BaseDamageEvent e = new BaseDamageEvent
