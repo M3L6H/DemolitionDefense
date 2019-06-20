@@ -38,9 +38,6 @@ public class WaveText : MonoBehaviour
 
     protected void Update()
     {
-        if (gm.Paused)
-            return;
-
         timeElapsed += Time.deltaTime;
         
         if (showing)

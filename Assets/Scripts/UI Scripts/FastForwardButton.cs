@@ -21,7 +21,7 @@ public class FastForwardButton : MonoBehaviour
     private void FastForwarded(FastForwardEvent e)
     {
         if (e.FastForwarding)
-            buttonImage.color = new Color(0.8f, 0.8f, 0.8f, 0.8f);
+            buttonImage.color = new Color(.78f, .78f, .78f, .5f);
         else
             buttonImage.color = Color.white;
     }

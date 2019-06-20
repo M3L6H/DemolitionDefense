@@ -18,6 +18,8 @@ public class CameraZoom : MonoBehaviour
 
         if (cm == null)
             Debug.LogError($"{name}: cannot find camera movement component!");
+
+        ZoomMax = ZoomMax * Screen.height / 1080f;
     }
 
     protected void Update()
