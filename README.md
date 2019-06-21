@@ -1,5 +1,7 @@
 # Demolition Defense
 
+Play this at [my website](michaelhollingworth.io).
+
 ## Purpose
 
 This project was created as a final project for the class EDS 130 at UCSD.
