@@ -18,6 +18,6 @@ Don't forget the wonderful lessons Mrs. Guzman has taught you, and, if sometime 
 
 ## About Me
 
-[Michael Hollingworth](michaelhollingworth.io) is a second-year Math-CS transfer student at UCSD. He came to UCSD after completing an Associates in Math at a community college in the hopes of furthering his knowledge of programming and Mathematical concepts.
+[Michael Hollingworth](michaelhollingworth.io) graduated with a Mathematics-Computer Science degree after transfering to UCSD. He attended UCSD after completing an Associates in Math at a community college in the hopes of furthering his knowledge of programming and Mathematical concepts.
 
 An enthusiast in all manner of pursuits, from programming, to writing, to game design, and to music composition, Michael is a student of many disciplines and is always seeking more knowledge.
