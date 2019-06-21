@@ -248,6 +248,14 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Called by wave manager when wave is over.
+    /// </summary>
+    public void WaveOver(int reward)
+    {
+        ChangeParts(true, reward);
+    }
+
+    /// <summary>
     /// Called when the game is lost.
     /// </summary>
     public void GameOver()
@@ -322,26 +330,7 @@ public class GameManager : MonoBehaviour
     public void RepairAll()
     {
         foreach(KeyValuePair<Vector3Int, Health> obj in repairableObjects)
-        {
-            int price = marketManager.PriceByTile(LevelMap.GetTile(obj.Key));
-            float pricePerUnit = (float)price / obj.Value.MaxHealth * 1.5f;
-            int totalPrice = Mathf.CeilToInt((obj.Value.MaxHealth - obj.Value.CurrentHealth) * pricePerUnit);
-
-            if (Parts >= totalPrice)
-            {
-                Parts -= totalPrice;
-
-                PartsChangedUIEvent uiEvent = new PartsChangedUIEvent
-                {
-                    Description = $"There are now {Parts} parts remaining."
-                };
-
-                uiEvent.TriggerEvent();
-
-                obj.Value.Repair();
-                repairableHealth[obj.Key] = obj.Value.CurrentHealth;
-            }
-        }
+            RepairObject(obj.Key);
     }
 
     public void AddRepairable(Vector3Int cellLoc, Health health)
@@ -401,14 +390,25 @@ public class GameManager : MonoBehaviour
 
         if (!second)
         {
-            Parts -= objectToPlace.Price;
+            ChangeParts(false, objectToPlace.Price);
+        }
+    }
 
-            PartsChangedUIEvent uiEvent = new PartsChangedUIEvent
-            {
-                Description = $"There are now {Parts} parts remaining."
-            };
+    /// <summary>
+    /// Called when the player repairs an object.
+    /// </summary>
+    /// <param name="location">The location of the object getting repaired.</param>
+    public void RepairObject(Vector3Int location)
+    {
+        int price = marketManager.PriceByTile(LevelMap.GetTile(location));
+        float pricePerUnit = (float)price / repairableObjects[location].MaxHealth * 1.5f;
+        int totalPrice = Mathf.CeilToInt((repairableObjects[location].MaxHealth - repairableObjects[location].CurrentHealth) * pricePerUnit);
 
-            uiEvent.TriggerEvent();
+        if (Parts >= totalPrice)
+        {
+            ChangeParts(false, totalPrice);
+            repairableObjects[location].Repair();
+            repairableHealth[location] = repairableObjects[location].CurrentHealth;
         }
     }
 
@@ -431,14 +431,7 @@ public class GameManager : MonoBehaviour
 
         int returnValue = Mathf.RoundToInt((float)value * health / maxHealth * Return);
 
-        Parts += returnValue;
-
-        PartsChangedUIEvent uiEvent = new PartsChangedUIEvent
-        {
-            Description = $"There are now {Parts} parts remaining."
-        };
-
-        uiEvent.TriggerEvent();
+        ChangeParts(true, returnValue);
 
         TileSoldEvent e = new TileSoldEvent
         {
@@ -520,7 +513,12 @@ public class GameManager : MonoBehaviour
 
     private void EnemyRecycled(EnemyRecycledEvent e)
     {
-        Parts += e.Value;
+        ChangeParts(true, e.Value);
+    }
+
+    private void ChangeParts(bool adding, int value)
+    {
+        Parts += adding ? Mathf.Abs(value) : -1 * Mathf.Abs(value);
 
         PartsChangedUIEvent uiEvent = new PartsChangedUIEvent
         {

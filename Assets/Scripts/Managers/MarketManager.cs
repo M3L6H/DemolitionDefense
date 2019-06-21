@@ -41,6 +41,7 @@ public class MarketManager : MonoBehaviour
             me.SetSprite(mi.Icon);
             me.SetEnabled(mi.Enabled);
             me.SetAction(() => { MakePurchase(mi); });
+            me.SetTooltipText(mi.Text);
         }
     }
 
@@ -71,6 +72,7 @@ public class MarketItem
     public int Price;
     public Sprite Icon;
     public TileBase Tile;
+    public string Text;
     public bool Rotates;
     public TileBase NorthTile;
     public TileBase SouthTile;

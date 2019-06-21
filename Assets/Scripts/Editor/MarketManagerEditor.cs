@@ -46,14 +46,14 @@ public class MarketManagerEditor : Editor
 
             EditorGUILayout.BeginHorizontal();
 
-            // Foldout for waves
+            // Foldout for items
             showItem[i] = EditorGUILayout.Foldout(showItem[i], $"Item {i + 1}", true);
 
-            // Buttons to re-order waves
+            // Buttons to re-order items
             ShowMoveUpDownButtons(serializedObject.FindProperty("Items"), i);
             EditorGUILayout.EndHorizontal();
 
-            // Rendering each wave
+            // Rendering each item
             if (showItem[i] && ((MarketManager)target).Items.Length > 0)
             {
                 EditorGUI.indentLevel += 1;
@@ -106,6 +106,10 @@ public class MarketManagerEditor : Editor
 
                 if (((MarketManager)target).Items[i].MultiTile)
                     ShowMultiTile(serializedObject, i);
+
+                EditorGUILayout.LabelField("Tooltip Text");
+                serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("Text").stringValue = 
+                    EditorGUILayout.TextArea(serializedObject.FindProperty("Items").GetArrayElementAtIndex(i).FindPropertyRelative("Text").stringValue, GUILayout.Height(100f));
 
                 EditorGUI.indentLevel -= 1;
             }

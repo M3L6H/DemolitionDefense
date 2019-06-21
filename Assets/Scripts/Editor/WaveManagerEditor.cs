@@ -61,13 +61,14 @@ public class WaveManagerEditor : Editor
             {
                 EditorGUI.indentLevel += 1;
                 ShowWaveAddRemoveButtons(serializedObject.FindProperty("Waves").GetArrayElementAtIndex(i));
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("Waves").GetArrayElementAtIndex(i).FindPropertyRelative("WaveReward"));
                 for (int j = 0; j < serializedObject.FindProperty("Waves").GetArrayElementAtIndex(i).FindPropertyRelative("Enemies").arraySize; j++)
                 {
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField($"Enemy {j + 1}", GUILayout.Width(75));
+                    EditorGUILayout.LabelField($"Enemy {j + 1}", GUILayout.Width(90));
                     EditorGUILayout.PropertyField(serializedObject.FindProperty("Waves").GetArrayElementAtIndex(i).FindPropertyRelative("Enemies").GetArrayElementAtIndex(j),
                                                   GUIContent.none);
-                    EditorGUILayout.LabelField($"Source {j + 1}", GUILayout.Width(75));
+                    EditorGUILayout.LabelField($"Source {j + 1}", GUILayout.Width(90));
                     EditorGUILayout.PropertyField(serializedObject.FindProperty("Waves").GetArrayElementAtIndex(i).FindPropertyRelative("Sources").GetArrayElementAtIndex(j),
                                                   GUIContent.none);
                     EditorGUILayout.EndHorizontal();

@@ -9,6 +9,7 @@ public class MenuEntry : MonoBehaviour
     public Image ButtonImage;
     private TextMeshProUGUI text;
     private Button button;
+    private Tooltip tooltip;
 
     protected void Awake()
     {
@@ -24,6 +25,11 @@ public class MenuEntry : MonoBehaviour
 
         if (button == null)
             Debug.LogError($"{name} cannot find button child component!");
+
+        tooltip = GetComponentInChildren<Tooltip>();
+
+        if (tooltip == null)
+            Debug.LogError($"{name} cannot find tooltip child component!");
     }
 
     public void SetSprite(Sprite sprite)
@@ -44,6 +50,11 @@ public class MenuEntry : MonoBehaviour
     public void SetEnabled(bool enabled)
     {
         button.interactable = enabled;
+    }
+
+    public void SetTooltipText(string text)
+    {
+        tooltip.SetText(text);
     }
 
 }

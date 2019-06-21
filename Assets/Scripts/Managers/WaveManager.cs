@@ -101,6 +101,7 @@ public class WaveManager : MonoBehaviour
 
             yield return StartCoroutine(SpawnWaveCoroutine(i));
             yield return StartCoroutine(WaitForLastEnemy());
+            gm.WaveOver(Waves[i].WaveReward);
         }
 
         yield return StartCoroutine(WaitForLastEnemy());
@@ -145,6 +146,7 @@ public class WaveManager : MonoBehaviour
 public class WaveEntry
 {
 
+    public int WaveReward;
     public Enemy[] Enemies;
     public Source[] Sources;
 

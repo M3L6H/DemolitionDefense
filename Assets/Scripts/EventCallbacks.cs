@@ -200,4 +200,16 @@ namespace EventCallbacks
 
     }
 
+    public class TextScrollEvent : Event<TextScrollEvent>
+    {
+
+        public bool Hidden;
+
+        public TextScrollEvent()
+        {
+            LoggingLevel = 5;
+        }
+
+    }
+
 }

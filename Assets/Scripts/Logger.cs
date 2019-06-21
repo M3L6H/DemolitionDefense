@@ -24,6 +24,7 @@ public class Logger : MonoBehaviour
         GameOverEvent.RegisterListener(LogEvent);
         GameWonEvent.RegisterListener(LogEvent);
         FastForwardEvent.RegisterListener(LogEvent);
+        TextScrollEvent.RegisterListener(LogEvent);
     }
 
     protected void OnDestroy()
@@ -43,6 +44,7 @@ public class Logger : MonoBehaviour
         GameOverEvent.UnregisterListener(LogEvent);
         GameWonEvent.UnregisterListener(LogEvent);
         FastForwardEvent.UnregisterListener(LogEvent);
+        TextScrollEvent.UnregisterListener(LogEvent);
     }
 
     private void LogEvent(PauseEvent e)
@@ -130,6 +132,12 @@ public class Logger : MonoBehaviour
     }
 
     private void LogEvent(FastForwardEvent e)
+    {
+        if (e.LoggingLevel <= LoggingLevel)
+            Debug.Log(e.Description);
+    }
+
+    private void LogEvent(TextScrollEvent e)
     {
         if (e.LoggingLevel <= LoggingLevel)
             Debug.Log(e.Description);
