@@ -1,6 +1,6 @@
 # Demolition Defense
 
-Play this at [my website](michaelhollingworth.io).
+Play this at [my website](http://michaelhollingworth.io).
 
 ## Purpose
 
